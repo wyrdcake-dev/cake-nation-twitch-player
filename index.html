@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cake Nation Twitch Player</title>
+<style>
+:root{--cake:#ffcf33;--bg:#111114;--panel:#1b1b20;--text:#fff;--muted:#b8b8c2;--border:rgba(255,255,255,.14)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:transparent;font-family:Arial,Helvetica,sans-serif}
+.widget{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 24px));background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.bar{height:42px;display:flex;align-items:center;gap:9px;padding:0 10px 0 13px;background:var(--bg);font-weight:800;font-size:14px}.dot{width:9px;height:9px;border-radius:50%;background:#ff3b30;box-shadow:0 0 10px rgba(255,59,48,.8)}.brand{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button{width:28px;height:28px;border:0;border-radius:7px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:16px}button:hover{background:rgba(255,255,255,.17)}
+.player{width:100%;aspect-ratio:4/3;background:#000}iframe{display:block;width:100%;height:100%;border:0}.collapsed .player{display:none}.collapsed{width:auto;min-width:190px}.collapsed .footer{display:none}
+.footer{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);font-size:11px;color:var(--muted)}.footer a{color:var(--cake);text-decoration:none;font-weight:700}
+@media(max-width:520px){.widget{right:10px;bottom:10px;width:calc(100vw - 20px)}}
+</style></head>
+<body>
+<div class="widget" id="widget">
+<div class="bar"><span class="dot"></span><span class="brand">CAKE NATION • WYRDCake LIVE</span><button id="min" aria-label="Minimize">−</button><button id="close" aria-label="Close">×</button></div>
+<div class="player"><iframe src="https://player.twitch.tv/?channel=wyrdcake&parent=YOUR-HOST-DOMAIN&muted=true" allow="autoplay; fullscreen" allowfullscreen title="Wyrdcake Twitch livestream"></iframe></div>
+<div class="footer"><span>Live on Twitch</span><a href="https://www.twitch.tv/wyrdcake" target="_blank" rel="noopener">Open Twitch ↗</a></div>
+</div>
+<script>
+const w=document.getElementById('widget'),m=document.getElementById('min'),c=document.getElementById('close');
+m.onclick=()=>{w.classList.toggle('collapsed');m.textContent=w.classList.contains('collapsed')?'+':'−'};
+c.onclick=()=>w.remove();
+</script>
+</body></html>
