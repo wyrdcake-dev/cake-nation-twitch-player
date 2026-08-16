@@ -1,27 +1,377 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cake Nation Twitch Player</title>
-<style>
-:root{--cake:#ffcf33;--bg:#111114;--panel:#1b1b20;--text:#fff;--muted:#b8b8c2;--border:rgba(255,255,255,.14)}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:transparent;font-family:Arial,Helvetica,sans-serif}
-.widget{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 24px));background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.45)}
-.bar{height:42px;display:flex;align-items:center;gap:9px;padding:0 10px 0 13px;background:var(--bg);font-weight:800;font-size:14px}.dot{width:9px;height:9px;border-radius:50%;background:#ff3b30;box-shadow:0 0 10px rgba(255,59,48,.8)}.brand{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-button{width:28px;height:28px;border:0;border-radius:7px;background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-size:16px}button:hover{background:rgba(255,255,255,.17)}
-.player{width:100%;aspect-ratio:4/3;background:#000}iframe{display:block;width:100%;height:100%;border:0}.collapsed .player{display:none}.collapsed{width:auto;min-width:190px}.collapsed .footer{display:none}
-.footer{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);font-size:11px;color:var(--muted)}.footer a{color:var(--cake);text-decoration:none;font-weight:700}
-@media(max-width:520px){.widget{right:10px;bottom:10px;width:calc(100vw - 20px)}}
-</style></head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Cake Nation - Wyrdcake Live</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* ========================================
+       MAIN WIDGET
+       ======================================== */
+
+    .widget {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+
+      width: 400px;
+
+      background: #17171b;
+      color: #ffffff;
+
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+
+      overflow: hidden;
+
+      box-shadow:
+        0 14px 40px rgba(0, 0, 0, 0.55),
+        0 4px 12px rgba(0, 0, 0, 0.35);
+
+      z-index: 999999;
+    }
+
+    /* ========================================
+       HEADER
+       ======================================== */
+
+    .widget-header {
+      width: 400px;
+      height: 42px;
+
+      display: flex;
+      align-items: center;
+
+      padding: 0 9px 0 13px;
+
+      background: #101014;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+
+      margin-right: 8px;
+
+      background: #ff3b30;
+
+      border-radius: 50%;
+
+      box-shadow:
+        0 0 5px rgba(255, 59, 48, 0.8),
+        0 0 12px rgba(255, 59, 48, 0.45);
+    }
+
+    .widget-title {
+      flex: 1;
+
+      font-size: 13px;
+      font-weight: 800;
+
+      letter-spacing: 0.3px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ========================================
+       BUTTONS
+       ======================================== */
+
+    .control-button {
+      width: 28px;
+      height: 28px;
+
+      margin-left: 5px;
+
+      border: none;
+      border-radius: 7px;
+
+      background: rgba(255, 255, 255, 0.08);
+
+      color: #ffffff;
+
+      font-size: 17px;
+      line-height: 28px;
+
+      cursor: pointer;
+
+      transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .control-button:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: scale(1.05);
+    }
+
+    /* ========================================
+       TWITCH PLAYER
+       ======================================== */
+
+    .player-container {
+      width: 400px;
+      height: 300px;
+
+      background: #000000;
+    }
+
+    .player-container iframe {
+      display: block;
+
+      width: 400px;
+      height: 300px;
+
+      border: 0;
+    }
+
+    /* ========================================
+       FOOTER
+       ======================================== */
+
+    .widget-footer {
+      width: 400px;
+      height: 32px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 11px;
+
+      background: #101014;
+
+      color: #a9a9b2;
+
+      font-size: 11px;
+    }
+
+    .widget-footer a {
+      color: #ffcf33;
+
+      text-decoration: none;
+
+      font-weight: 700;
+    }
+
+    .widget-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ========================================
+       MINIMIZED STATE
+       ======================================== */
+
+    .widget.minimized {
+      width: 210px;
+    }
+
+    .widget.minimized .player-container,
+    .widget.minimized .widget-footer {
+      display: none;
+    }
+
+    .widget.minimized .widget-header {
+      width: 210px;
+    }
+
+    /* ========================================
+       MOBILE
+       ======================================== */
+
+    @media (max-width: 440px) {
+
+      .widget {
+        right: 10px;
+        bottom: 10px;
+
+        width: 400px;
+
+        transform-origin: bottom right;
+
+        transform:
+          scale(
+            calc((100vw - 20px) / 400)
+          );
+      }
+
+      .widget.minimized {
+        width: 210px;
+
+        transform:
+          scale(
+            calc((100vw - 20px) / 210)
+          );
+      }
+    }
+  </style>
+</head>
+
 <body>
-<div class="widget" id="widget">
-<div class="bar"><span class="dot"></span><span class="brand">CAKE NATION • WYRDCake LIVE</span><button id="min" aria-label="Minimize">−</button><button id="close" aria-label="Close">×</button></div>
-<div class="player"><iframe src="https://player.twitch.tv/?channel=wyrdcake&parent=parent=wyrdcake-dev.github.io&muted=true" allow="autoplay; fullscreen" allowfullscreen title="Wyrdcake Twitch livestream"></iframe></div>
-<div class="footer"><span>Live on Twitch</span><a href="https://www.twitch.tv/wyrdcake" target="_blank" rel="noopener">Open Twitch ↗</a></div>
-</div>
-<script>
-const w=document.getElementById('widget'),m=document.getElementById('min'),c=document.getElementById('close');
-m.onclick=()=>{w.classList.toggle('collapsed');m.textContent=w.classList.contains('collapsed')?'+':'−'};
-c.onclick=()=>w.remove();
-</script>
-</body></html>
+
+  <!-- ======================================
+       CAKE NATION TWITCH WIDGET
+       ====================================== -->
+
+  <div
+    class="widget"
+    id="cakeNationWidget"
+  >
+
+    <!-- HEADER -->
+
+    <div class="widget-header">
+
+      <span
+        class="live-dot"
+        aria-hidden="true"
+      ></span>
+
+      <span class="widget-title">
+        CAKE NATION • WYRDCake LIVE
+      </span>
+
+      <button
+        class="control-button"
+        id="minimizeButton"
+        aria-label="Minimize Twitch player"
+        title="Minimize"
+      >
+        −
+      </button>
+
+      <button
+        class="control-button"
+        id="closeButton"
+        aria-label="Close Twitch player"
+        title="Close"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <!-- TWITCH PLAYER -->
+
+    <div class="player-container">
+
+      <iframe
+        src="https://player.twitch.tv/?channel=wyrdcake&parent=wyrdcake-dev.github.io"
+        height="300"
+        width="400"
+        allowfullscreen>
+      </iframe>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="widget-footer">
+
+      <span>
+        🔴 Live on Twitch
+      </span>
+
+      <a
+        href="https://www.twitch.tv/wyrdcake"
+        target="_blank"
+        rel="noopener noreferrer">
+        Open Twitch ↗
+      </a>
+
+    </div>
+
+  </div>
+
+
+  <!-- ======================================
+       WIDGET JAVASCRIPT
+       ====================================== -->
+
+  <script>
+
+    const widget =
+      document.getElementById("cakeNationWidget");
+
+    const minimizeButton =
+      document.getElementById("minimizeButton");
+
+    const closeButton =
+      document.getElementById("closeButton");
+
+
+    /* MINIMIZE / RESTORE */
+
+    minimizeButton.addEventListener(
+      "click",
+      function () {
+
+        widget.classList.toggle("minimized");
+
+        if (
+          widget.classList.contains("minimized")
+        ) {
+
+          minimizeButton.textContent = "+";
+
+          minimizeButton.title =
+            "Restore Twitch player";
+
+          minimizeButton.setAttribute(
+            "aria-label",
+            "Restore Twitch player"
+          );
+
+        } else {
+
+          minimizeButton.textContent = "−";
+
+          minimizeButton.title =
+            "Minimize Twitch player";
+
+          minimizeButton.setAttribute(
+            "aria-label",
+            "Minimize Twitch player"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* CLOSE */
+
+    closeButton.addEventListener(
+      "click",
+      function () {
+
+        widget.style.display = "none";
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
